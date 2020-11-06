@@ -1,0 +1,465 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+  <title>2pChess</title>
+  <link rel="icon" href="images\favicon-Chess.ico" type="image/x-icon">
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <link href="css/custom-modal.css" rel="stylesheet">
+<style>
+.form-control::placeholder { color: grey;}
+.change-color::placeholder { color: red;}
+</style>
+</head>
+
+<script type="text/javascript" src="js/connection.js"></script>
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper" >
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+        <div class="sidebar-brand-icon ">
+          <i class="fas fa-chess"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3"><sup>2</sup>pChess</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+ <!-- Modal for login-->
+  <div class="modal fade" id="modalForLogin" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">    
+      <!-- Modal content-->
+      <div class="modal-content">
+      <div class="container">
+      <div class="text-center">
+<h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+</div>
+<form class="user">
+<div class="form-group">
+<input type="text" class="form-control form-control-user" id="logUsername"  placeholder="Enter User Name" >
+</div>
+<div class="form-group">
+<input type="password" class="form-control form-control-user" id="logPassword" placeholder="Password">
+</div>                    
+<a href="#" onclick="login()" class="btn btn-primary btn-user btn-block">Login</a> </form>
+<hr>
+ <div class="text-center">
+  <a class="small" onclick="forgotPassword()" href="#">Forgot Password?</a>
+    </div>
+   <div class="text-center">
+   <a class="small" onclick="createAccount()" href="#">Create an Account!</a>
+   </div>      
+      </div>  
+      </div>      
+    </div>
+  </div>
+
+
+ <!-- Modal for signup-->
+  <div class="modal fade" id="modalForSignup" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">    
+      <!-- Modal content-->
+      <div class="modal-content">
+       <div class="container">
+        <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+              </div>
+              <form class="user">
+                <div class="form-group">
+                  <input type="text" class="form-control form-control-user" id="userName" placeholder="User Name" required="required" data-validation-required-message="Please enter your UserName.">
+                </div>
+                 <div class="form-group">
+                  <input type="email" class="form-control form-control-user" id="email" placeholder="Email Address">
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input type="password" class="form-control form-control-user" id="password" placeholder="Password">
+                  </div>
+                  <div class="col-sm-6">
+                    <input type="password" class="form-control form-control-user" id="repeatPassword" placeholder="Repeat Password">
+                  </div>
+                </div>
+              <hr>
+                <a href="#" onclick="registerAccount()" class="btn btn-primary btn-user btn-block">
+                  Register Account
+                </a>
+                
+              </form>
+              <hr>
+              <div class="text-center">
+                <a class="small" onclick="loginAgain()" href="#">Already have an account? Login!</a>
+              </div>
+      </div>  
+      </div>      
+    </div>
+  </div>
+
+
+
+
+
+ <!-- Modal for forgotPassword-->
+  <div class="modal fade" id="modalForForgotpassword" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">    
+      <!-- Modal content-->
+      <div class="modal-content">
+       <div class="container">
+        <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-2">Forgot Your Password?</h1>
+                    </div>
+                  <form class="user">
+                    <div class="form-group">
+                      <input type="email" class="form-control form-control-user" id="oldEmail"  placeholder="Enter Email Address...">
+                    </div>
+                   <div class="form-group">
+                      <input type="password" class="form-control form-control-user" id="newPassword"  placeholder="Enter New Password">
+                    </div>
+                    <a href="#" class="btn btn-primary btn-user btn-block" onclick="resetPassword()">
+                      Reset Password
+                    </a>
+                  </form>
+                  <hr>
+                  <div class="text-center">
+                    <a class="small" onclick="createAccount()" href="#">Create an Account!</a>
+                  </div>
+                  <div class="text-center">
+                    <a class="small" onclick="loginAgain()" href="#">Already have an account? Login!</a>
+                  </div>
+      </div>  
+      </div>      
+    </div>
+  </div>
+
+
+
+
+
+
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#"  data-toggle="modal" onclick="newGame()">         
+       <i class="fas fa-gamepad"></i>          
+         <font size="4">New Game</font>
+        </a> 
+      </li>
+      
+   <!-- Modal for Play-->
+  <div class="modal fade" id="modalForPlay" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+        <h6 class="modal-title"><font size="4">New Game</font></h6>  
+        <button type="button" class="close" data-dismiss="modal">&times;</button>          
+        </div>
+         <div class="modal-body">
+        <lable>Click Play To Procced.</lable>  
+        </div>        
+        <div class="modal-footer">
+         <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="play()">play</button>
+        </div>
+      </div>      
+    </div>
+  </div>
+
+
+
+       <hr class="sidebar-divider">  
+      <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" onclick='clickLink()'>
+      <i class="fas fa-wifi"></i>
+          <span ><font size="4">Play Live</font></span>
+        </a>
+      </li>
+   <hr class="sidebar-divider">
+  </ul>
+
+<!-- Modal for Play live-->
+  <div class="modal fade" id="modalForConnect" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+        <h6 class="modal-title"><font size="4">Live Game</font></h6>  
+        <button type="button" class="close" data-dismiss="modal">&times;</button>          
+        </div>
+        <div class="modal-body">           
+              <div class="form-group">
+              <label for="sel1">Connections Available:</label>
+              <select class="form-control" id="list" name="list">
+              <option>0</option>
+              </select>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="connect()" >Connect</button>
+        </div>
+      </div>      
+    </div>
+  </div>
+
+
+<!-- Modal for requesting-->
+  <div class="modal fade" id="modalForRequest" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+        <h6 class="modal-title"><font size="4">Request</font></h6>  
+        </div>
+         <div class="modal-body">
+           <h4><span id="requestuser"></span> is requesting...</h4>
+        </div>        
+        <div class="modal-footer">
+         <button type="button" class="btn btn-primary" onclick="accept()">Accept</button>
+         <button type="button" class="btn btn-danger" onclick="denied()">Denied</button>
+       </div>
+      </div>      
+    </div>
+  </div>
+
+<!-- Modal for spinner-->
+  <div class="modal fade" id="modalForSpinner" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <div class="loader"></div>
+        <div clas="loader-txt">
+         <p>Please wait.....</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal for InGame-->
+  <div class="modal fade" id="modalForInGame" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">       
+        <div clas="loader-txt">
+         <p>Unable to Connect !</p>
+         <p>User is Playing</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal for disconnect-->
+  <div class="modal fade" id="modalForDisconnect" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">       
+        <div clas="loader-txt">
+         <p>User is disconnected !</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal for playing-->
+  <div class="modal fade" id="modalForPlaying" role="dialog" >
+    <div class="modal-dialog modal-dialog-centered">    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+        <h6 class="modal-title"><font size="4"></font></h6>  
+        </div>
+         <div class="modal-body">
+        <p>You are in the middle of game.</p>
+        </div>        
+        <div class="modal-footer">
+         <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="play()">Replay</button>
+         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="mainView()">Quit</button>
+       </div>
+      </div>      
+    </div>
+  </div>
+
+
+<!-- Modal for closeLive-->
+  <div class="modal fade" id="modalForCloseLive" role="dialog" >
+    <div class="modal-dialog modal-dialog-centered">    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+        <h6 class="modal-title"><font size="4"></font></h6>  
+        </div>
+         <div class="modal-body">
+        <p>Would you like to close game ?</p>
+        </div>        
+        <div class="modal-footer">
+    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeLive()">Yes</button>
+       </div>
+      </div>      
+    </div>
+  </div>
+
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- navigation bar -->
+      <div class="navbar" style="height:40px">
+      <h3>Online Chess Game</h3>
+    <div>
+      <b><span id="userId" style="color:black"></span></b>
+      <span style="color:red" id="userLive"><span>
+    </div>
+      </div> 
+           <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="content"> 
+       <div class="canvas">
+      <canvas id="board" width="600" height="600" style="border:2px solid #DCDCDC">
+          <img id="whitePawn1"  src="images\whitePawn1.png">
+<img id="whitePawn2"  src="images\whitePawn2.png">
+<img id="whitePawn3"  src="images\whitePawn3.png">
+<img id="whitePawn4"  src="images\whitePawn4.png">
+<img id="whitePawn5"  src="images\whitePawn5.png">
+<img id="whitePawn6"  src="images\whitePawn6.png">
+<img id="whitePawn7"  src="images\whitePawn7.png">
+<img id="whitePawn8"  src="images\whitePawn8.png">
+<img id="whiteBishop1"  src="images\whiteBishop1.png">
+<img id="whiteBishop2"  src="images\whiteBishop2.png">
+<img id="whiteKnight1"  src="images\whiteKnight1.png">
+<img id="whiteKnight2"  src="images\whiteKnight2.png">
+<img id="whiteRook1"  src="images\whiteRook1.png">
+<img id="whiteRook2"  src="images\whiteRook2.png">
+<img id="whiteKing"  src="images\whiteking.png">
+<img id="whiteQueen"  src="images\whiteQueen.png">
+<img id="blackPawn1"  src="images\blackPawn1.png">
+<img id="blackPawn2"  src="images\blackPawn2.png">
+<img id="blackPawn3"  src="images\blackPawn3.png">
+<img id="blackPawn4"  src="images\blackPawn4.png">
+<img id="blackPawn5"  src="images\blackPawn5.png">
+<img id="blackPawn6"  src="images\blackPawn6.png">
+<img id="blackPawn7"  src="images\blackPawn7.png">
+<img id="blackPawn8"  src="images\blackPawn8.png">
+<img id="blackBishop1"  src="images\blackBishop1.png">
+<img id="blackBishop2"  src="images\blackBishop2.png">
+<img id="blackKnight1"  src="images\blackKnight1.png">
+<img id="blackKnight2"  src="images\blackKnight2.png">
+<img id="blackRook1"  src="images\blackRook1.png">
+<img id="blackRook2"  src="images\blackRook2.png">
+<img id="blackKing"  src="images\blackking.png">
+<img id="blackQueen"  src="images\blackQueen.png">
+         </canvas> 
+        </div>
+       <div id="rsb" class="rightSideBar">
+       <div id="player1"  style="display:none">
+        <img src="images\player.png" >
+         <span id="p1"><b>1st Player</b></span><br><br>
+       <img src="images\rsb\whitePawn.png">
+       <span id="whitePawn">0</span>
+        <img src="images\rsb\whiteKnight.png">
+       <span id="whiteKnight">0</span>
+       <img src="images\rsb\whiteQueen.png">
+       <span id="whiteQueenSpan">0</span>
+         <img src="images\rsb\whiteBishop.png">
+       <span id="whiteBishop">0</span>
+        <img src="images\rsb\whiteRook.png">
+       <span id="whiteRook">0</span>
+       </div>
+       <div id="player2"  style="display:none">
+        <img src="images\player.png" >
+       <span id="p2"><b>2nd Player</b></span><br><br>
+      <img src="images\rsb\blackPawn.png">
+       <span id="blackPawn">0</span>
+        <img src="images\rsb\blackKnight.png">
+       <span id="blackKnight">0</span>
+       <img src="images\rsb\blackQueen.png">
+       <span id="blackQueenSpan">0</span>
+         <img src="images\rsb\blackBishop.png">
+       <span id="blackBishop">0</span>
+        <img src="images\rsb\blackRook.png">
+       <span id="blackRook">0</span>
+       </div>
+        <div id="gameStatus" style="height:200px;display:none">
+      <div style="border:3px solid #ccccb3;margin-top:50px">
+      <center><span id="displayPlayer" style="color:green;font-size:20px"></span></center>
+      </div>   
+      </div>
+       <div id="moves" style="height:200px;display:none">
+      <div style="border:3px solid #ccccb3;margin-top:50px">
+      <center><span id="displayChance" style="color:green;font-size:90px"></span></center>
+      </div>   
+      </div>
+       <div id="clickable"  style="display:none">
+      <button type"button" onclick="newGame()" class="btn btn-danger btn-lg" style="width:230px">Quit</button>
+         </div>
+      <div id="clickableForLive"  style="display:none;padding-left:60px">
+      <button type"button" class="btn btn-danger btn-lg" style="width:230px">Quit</button>
+         </div>
+       </div> 
+       </div>
+      <!-- /.container-fluid -->
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto"  >
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; 2pChess.ga 2019</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+<script type="text/javascript" src="js/game.js"></script>
+
+</body>
+
+</html>
